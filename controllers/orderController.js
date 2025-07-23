@@ -9,10 +9,9 @@ export async function createOrder(req, res) {
         return
     }
 
-    // Combine user info with request body
     const orderInfo = {
         ...req.user,
-        ...req.body  // This will include phone, address, and products from your JSON
+        ...req.body
     }
 
     if (orderInfo.name == null) {
@@ -58,11 +57,11 @@ export async function createOrder(req, res) {
                     name: item.ProductName,
                     altName: item.altName,
                     description: item.description,
-                    image: item.images,  // Changed from 'images' to 'image' to match schema
+                    image: item.images,
                     price: item.price
-                    // Removed labelledPrice from productInfo as it's not in the schema
+
                 },
-                quantity: orderInfo.products[i].qty  // Changed from 'qty' to 'quantity' to match schema
+                quantity: orderInfo.products[i].qty
             }
 
             total += (item.price * orderInfo.products[i].qty)
@@ -73,8 +72,8 @@ export async function createOrder(req, res) {
             orderId: orderId,
             email: req.user.email,
             name: orderInfo.name,
-            address: orderInfo.address || "",  // Provide default empty string
-            phone: orderInfo.phone || "",      // Provide default empty string
+            address: orderInfo.address || "",
+            phone: orderInfo.phone || "",
             total: total,
             products: products,
             labelTotal: labelTotal
@@ -88,7 +87,7 @@ export async function createOrder(req, res) {
     } catch (err) {
         res.status(500).json({
             message: "Failed to create order",
-            error: err.message || err  // Return the actual error message
+            error: err.message || err
         })
     }
 }
