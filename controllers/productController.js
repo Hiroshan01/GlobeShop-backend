@@ -50,9 +50,10 @@ export function createProduct(req, res) {
 //Product delete
 export async function deleteProduct(req, res) {
     if (!isAdmin(req)) {
-        req.status(403).json({
+        res.status(403).json({
             message: "You are not authorized to delete product"
         })
+        return
     }
     try {
         await Product.deleteOne({ productId: req.params.productId })//URL to set /:productId
@@ -69,10 +70,11 @@ export async function deleteProduct(req, res) {
 
 //Product Update
 export async function updateProduct(req, res) {
-    if (!isAdmin) {
-        req.status(403).json({
+    if (!isAdmin(req)) {
+        res.status(403).json({
             message: "You are not authorized to update to product"
         })
+        return
     }
     const productId = req.params.productId
     const updateProduct = req.body
