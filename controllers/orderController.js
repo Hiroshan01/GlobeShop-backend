@@ -86,7 +86,6 @@ export async function createOrder(req, res) {
             createdOrder: createdOrder
         })
     } catch (err) {
-        console.error("Order creation error:", err)  // Added console.error for debugging
         res.status(500).json({
             message: "Failed to create order",
             error: err.message || err  // Return the actual error message

@@ -5,6 +5,7 @@ import connectDB from './config/configDB.js';
 import productRoute from './routes/productRouter.js';
 import jwt from "jsonwebtoken"
 import orderedRoute from './routes/orderRouter.js';
+import reviewRouter from './routes/reviewRouter.js';
 
 
 let app = express();
@@ -45,6 +46,8 @@ connectDB()
 app.use("/users", userRoute)
 app.use("/product", productRoute)
 app.use("/order", orderedRoute)
+app.use("/review", reviewRouter)
+
 
 
 app.listen(5000, () => {
