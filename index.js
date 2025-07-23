@@ -4,11 +4,13 @@ import userRoute from './routes/userRouts.js';
 import connectDB from './config/configDB.js';
 import productRoute from './routes/productRouter.js';
 import jwt from "jsonwebtoken"
+import orderedRoute from './routes/orderRouter.js';
 
 
 let app = express();
 
 app.use(bodyParser.json())//Middeleware
+app.use(express.urlencoded({ extended: true }))
 
 //Middleware
 app.use(
@@ -42,6 +44,7 @@ connectDB()
 //Routers
 app.use("/users", userRoute)
 app.use("/product", productRoute)
+app.use("/order", orderedRoute)
 
 
 app.listen(5000, () => {

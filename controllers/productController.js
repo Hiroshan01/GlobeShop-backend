@@ -38,9 +38,10 @@ export function createProduct(req, res) {
         }
 
     ).catch(
-        () => {
-            res.json({
-                message: "Product not created"
+        (err) => {
+            res.status(500).json({
+                message: "Product not created",
+                error: err
             })
         }
     )

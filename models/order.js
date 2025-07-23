@@ -16,25 +16,30 @@ const orderSchema = mongoose.Schema({
     },
     phone: {
         type: String,
-        required: true
+        required: false,  // Changed to false
+        default: ""       // Added default
     },
     address: {
         type: String,
-        required: true
+        required: false,  // Changed to false
+        default: ""       // Added default
     },
     status: {
         type: String,
         required: true,
         default: "pending"
     },
+    labelTotal: {
+        type: Number,
+        required: true
+    },
     total: {
         type: Number,
         required: true
     },
-    product: [
+    products: [
         {
             productInfo: {
-
                 productId: {
                     type: String,
                     required: true
@@ -54,20 +59,19 @@ const orderSchema = mongoose.Schema({
                     type: String
                 }],
                 price: {
-                    type: String,
+                    type: Number,
                     required: true
                 }
-
             },
             quantity: {
                 type: Number,
-
+                min: 1
             }
         }
     ],
     date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 })
 
