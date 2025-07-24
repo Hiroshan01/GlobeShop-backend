@@ -1,6 +1,8 @@
 import User from "../models/users.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import dotenv from "dotenv";
+dotenv.config()
 
 
 export function createUser(req, res) {
@@ -37,7 +39,7 @@ export function createUser(req, res) {
         }
     ).catch(
         () => {
-            res.json({
+            res.status(500).json({
                 message: "Fail User creation",
             })
         }
@@ -79,11 +81,12 @@ export function userLogin(req, res) {
                             role: user.role,
                             img: user.img
                         },
-                        "hiroshan"
+                        process.env.JWT_KEY
                     )
                     res.json({
                         message: "Login successful",
-                        token: token
+                        token: token,
+                        role: user.role
                     })
                 } else {
                     res.status(401).json({
