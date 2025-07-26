@@ -93,3 +93,27 @@ export async function createOrder(req, res) {
     }
 }
 
+
+//Get Order
+export async function getOrder(req, res) {
+    if (req.user == null) {
+        res.status(403).json({
+            message: "Pleas Login and try again"
+        })
+        return
+    }
+    try {
+        if (req.user.role == "admin") {
+            const orders = await Order.find();
+            res.json(orders)
+        } else {
+            const orders = await Order.find({ email: req.user.email });
+            res.json(orders)
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: "Failed to fetch orders",
+            error: err
+        })
+    }
+}
