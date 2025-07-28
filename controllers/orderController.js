@@ -1,6 +1,6 @@
 import Order from '../models/order.js'
 import Product from '../models/product.js'
-import Review from '../models/reviews.js'
+import { isAdmin } from "./userController.js";
 
 export async function createOrder(req, res) {
     if (req.user == null) {
@@ -115,5 +115,32 @@ export async function getOrder(req, res) {
             message: "Failed to fetch orders",
             error: err
         })
+    }
+}
+
+// Order Update
+export async function updateOderStatus(req, res) {
+    // Fix: Check if user is NOT an admin, then deny access
+    if (!isAdmin(req)) {
+        return res.status(403).json({
+            message: "You are not authorized to update orders status"
+        });
+    }
+
+    try {
+        const { orderId, status } = req.params; // Destructure params
+
+        await Order.updateOne(
+            { orderId: orderId },
+            { status: status }
+        );
+
+        return res.status(200).json({
+            message: "Order status updated successfully"
+        });
+    } catch (e) {
+        res.status(500).json({
+            message: "Failed to update order status"
+        });
     }
 }
