@@ -1,5 +1,5 @@
 import express from "express"
-import { createUser, getUserById, getUsers, googleLogin, resetPassword, sendOtp, userLogin } from "../controllers/userController.js";
+import { createUser, getUserById, getUsers, googleLogin, resetPassword, sendOtp, updateUserProfile, userLogin } from "../controllers/userController.js";
 
 
 
@@ -13,5 +13,6 @@ userRoute.get("/:_id", getUserById);
 userRoute.post("/google-login", googleLogin)
 userRoute.post("/send-otp", sendOtp)
 userRoute.post("/reset-password", resetPassword)
+userRoute.put("/:_id", updateUserProfile)
 
 export default userRoute;
