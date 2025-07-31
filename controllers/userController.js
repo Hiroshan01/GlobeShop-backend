@@ -277,39 +277,51 @@ export async function resetPassword(req, res) {
         });
     }
 }
-//update user Profile
-export async function updateUserProfile(req, res) {
-    const userId = req.params._id;
 
+
+export async function updateUserProfile(req, res) {
     try {
-        // Check if the user exists
-        const user = await User.findById(userId);
-        if (!user) {
+        const userId = req.params.userId;
+        const { firstName, lastName, email, image } = req.body;
+
+        if (!userId || !firstName || !lastName || !email) {
+            return res.status(400).json({
+                message: "Missing required fields"
+            });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                firstName,
+                lastName,
+                email,
+                img: image
+            },
+            { new: true }
+        );
+
+        if (!updatedUser) {
             return res.status(404).json({
                 message: "User not found"
             });
         }
 
-        if (req.body.firstName) user.firstName = req.body.firstName;
-        if (req.body.lastName) user.lastName = req.body.lastName;
-        if (req.body.email) user.email = req.body.email;
-
-        // Save the updated user
-        await user.save();
-
         res.status(200).json({
-            message: "User profile updated successfully",
-            user
+            message: "Profile updated successfully",
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            email: updatedUser.email,
+            image: updatedUser.img
         });
+
     } catch (error) {
-        console.error("Error updating user profile:", error);
+        console.error('Error:', error);
         res.status(500).json({
-            message: "Internal server error",
-            error: error.message
+            message: "Server error"
         });
     }
 }
-
 
 // admin check function
 export function isAdmin(req) {
