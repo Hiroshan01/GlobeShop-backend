@@ -282,9 +282,6 @@ export async function updateUserProfile(req, res) {
     try {
         const userId = req.params.userId;
 
-        console.log('Received data:', req.body);
-        console.log('User ID from params:', userId);
-
         const { userFirstName, userLastName, email, img, role, password } = req.body;
 
         if (!userId) {
@@ -354,6 +351,35 @@ export async function updateUserProfile(req, res) {
         res.status(500).json({
             message: "Server error",
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+}
+
+//Delete User
+export async function deleteUser(req, res) {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({
+            message: "You are not authorized to delete user"
+        });
+    }
+
+    try {
+        const result = await User.deleteOne({ _id: req.params.userId });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.json({
+            message: "User deleted successfully"
+        });
+    } catch (err) {
+        console.error('Delete user error:', err);
+        res.status(500).json({
+            message: "Failed to delete User",
+            error: err.message
         });
     }
 }

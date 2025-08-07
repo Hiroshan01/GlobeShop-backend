@@ -1,5 +1,5 @@
 import express from "express"
-import { createUser, getUserById, getUsers, googleLogin, resetPassword, sendOtp, updateUserProfile, userLogin } from "../controllers/userController.js";
+import { createUser, deleteUser, getUserById, getUsers, googleLogin, resetPassword, sendOtp, updateUserProfile, userLogin } from "../controllers/userController.js";
 
 const userRoute = express.Router();
 
@@ -14,5 +14,6 @@ userRoute.post("/reset-password", resetPassword)
 // Dynamic routes last
 userRoute.get("/:userId", getUserById);
 userRoute.put("/:userId", updateUserProfile)
+userRoute.delete("/:userId", deleteUser)
 
 export default userRoute;
