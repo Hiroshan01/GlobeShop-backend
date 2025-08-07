@@ -278,28 +278,58 @@ export async function resetPassword(req, res) {
     }
 }
 
-
 export async function updateUserProfile(req, res) {
     try {
         const userId = req.params.userId;
-        const { firstName, lastName, email, image } = req.body;
 
-        if (!userId || !firstName || !lastName || !email) {
+        console.log('Received data:', req.body);
+        console.log('User ID from params:', userId);
+
+        const { userFirstName, userLastName, email, img, role, password } = req.body;
+
+        if (!userId) {
             return res.status(400).json({
-                message: "Missing required fields"
+                message: "User ID is required"
             });
+        }
+
+        if (!userFirstName || !userLastName) {
+            console.log('Missing fields:', { userFirstName, userLastName, email });
+            return res.status(400).json({
+                message: "Missing required fields: userFirstName and userLastName are required"
+            });
+        }
+
+        const updateData = {
+            firstName: userFirstName,
+            lastName: userLastName
+        };
+
+
+        if (email) {
+            updateData.email = email;
+        }
+
+        if (role) {
+            updateData.role = role;
+        }
+
+        if (img) {
+            updateData.img = img;
+        }
+
+
+        // Only update password if provided
+        if (password && password.trim() !== "") {
+            const saltRounds = 10;
+            updateData.password = await bcrypt.hash(password, saltRounds);
         }
 
         const updatedUser = await User.findByIdAndUpdate(
             userId,
-            {
-                firstName,
-                lastName,
-                email,
-                img: image
-            },
+            updateData,
             { new: true }
-        );
+        ).select('-password');
 
         if (!updatedUser) {
             return res.status(404).json({
@@ -308,21 +338,25 @@ export async function updateUserProfile(req, res) {
         }
 
         res.status(200).json({
-            message: "Profile updated successfully",
-            firstName: updatedUser.firstName,
-            lastName: updatedUser.lastName,
-            email: updatedUser.email,
-            image: updatedUser.img
+            message: "User updated successfully",
+            user: {
+                id: updatedUser._id,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                email: updatedUser.email,
+                img: updatedUser.img,
+                role: updatedUser.role
+            }
         });
 
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Update error details:', error);
         res.status(500).json({
-            message: "Server error"
+            message: "Server error",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 }
-
 // admin check function
 export function isAdmin(req) {
     if (req.user == null) {
